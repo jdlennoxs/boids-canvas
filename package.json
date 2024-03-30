@@ -1,7 +1,7 @@
 {
   "name": "jdls-boids-canvas",
   "private": false,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "A canvas that renders a never ending flock of objects following boids principles.",
   "scripts": {
@@ -23,7 +23,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.9.5",
-    "vite": "^3.2.10"
+    "vite": "^3.2.10",
+    "vite-plugin-dts": "^3.8.1"
   },
   "repository": {
     "type": "git",
@@ -34,14 +35,15 @@
   "homepage": "https://github.com/jdlennoxs/boids-canvas.git",
   "main": "./dist/boids-canvas.umd.js",
   "module": "./dist/boids-canvas.es.js",
+  "types": "./dist/boids-canvas.d.ts",
   "exports": {
     ".": {
       "import": "./dist/boids-canvas.es.js",
-      "require": "./dist/boids-canvas.umd.js"
+      "require": "./dist/boids-canvas.umd.js",
+      "types": "./dist/boids-canvas.d.ts"
     }
   },
   "files": [
-    "dist",
-    "public/round-plane.glb"
+    "dist"
   ]
 }
