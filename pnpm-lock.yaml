@@ -10,7 +10,6 @@ specifiers:
   '@vitejs/plugin-react': ^2.2.0
   react: ^18.2.0
   react-dom: ^18.2.0
-  react-intersection-observer: ^9.8.1
   three: ^0.146.0
   typescript: ^4.6.4
   vite: ^3.2.3
@@ -20,7 +19,6 @@ dependencies:
   '@react-three/fiber': 8.9.1_mjlgqb43i6mvslmnwgzrdumoh4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
-  react-intersection-observer: 9.8.1_biqbaboplfbrettd7655fr4n2y
   three: 0.146.0
 
 devDependencies:
@@ -1106,19 +1104,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
-
-  /react-intersection-observer/9.8.1_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-QzOFdROX8D8MH3wE3OVKH0f3mLjKTtEN1VX/rkNuECCff+aKky0pIjulDhr3Ewqj5el/L+MhBkM3ef0Tbt+qUQ==}
-    peerDependencies:
-      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-is/16.13.1:
