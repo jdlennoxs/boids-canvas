@@ -39,5 +39,8 @@
       "import": "./dist/boids-canvas.es.js",
       "require": "./dist/boids-canvas.umd.js"
     }
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
