@@ -10,20 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-three/drei": "^9.40.0",
-    "@react-three/fiber": "^8.9.1",
+    "@react-three/drei": "^9.103.0",
+    "@react-three/fiber": "^8.16.1",
     "three": "^0.146.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.0.24",
-    "@types/react-dom": "^18.0.8",
+    "@types/node": "^20.12.2",
+    "@types/react": "^18.2.73",
+    "@types/react-dom": "^18.2.23",
     "@types/three": "^0.146.0",
     "@vitejs/plugin-react": "^2.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.2.3"
+    "typescript": "^4.9.5",
+    "vite": "^3.2.10"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "public/round-plane.glb"
   ]
 }
