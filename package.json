@@ -1,5 +1,5 @@
 {
-  "name": "boids-flock",
+  "name": "boids-canvas",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -32,12 +32,12 @@
   "author": "Jack Scott",
   "license": "MIT",
   "homepage": "https://github.com/jdlennoxs/boids-canvas.git",
-  "main": "./dist/react-library-scaffold.umd.js",
-  "module": "./dist/react-library-scaffold.es.js",
+  "main": "./dist/boids-canvas.umd.js",
+  "module": "./dist/boids-canvas.es.js",
   "exports": {
     ".": {
-      "import": "./dist/react-library-scaffold.es.js",
-      "require": "./dist/react-library-scaffold.umd.js"
+      "import": "./dist/boids-canvas.es.js",
+      "require": "./dist/boids-canvas.umd.js"
     }
   }
 }
