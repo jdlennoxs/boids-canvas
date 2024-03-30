@@ -1,7 +1,7 @@
 {
   "name": "jdls-boids-canvas",
   "private": false,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "description": "A canvas that renders a never ending flock of objects following boids principles.",
   "scripts": {
@@ -33,9 +33,9 @@
   "author": "Jack Scott",
   "license": "MIT",
   "homepage": "https://github.com/jdlennoxs/boids-canvas.git",
-  "main": "./dist/boids-canvas.umd.js",
-  "module": "./dist/boids-canvas.es.js",
-  "types": "./dist/boids-canvas.d.ts",
+  "main": "dist/boids-canvas.umd.js",
+  "module": "dist/boids-canvas.es.js",
+  "types": "dist/boids-canvas.d.ts",
   "exports": {
     ".": {
       "import": "./dist/boids-canvas.es.js",
