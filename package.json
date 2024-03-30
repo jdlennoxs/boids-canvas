@@ -1,5 +1,5 @@
 {
-  "name": "boids-canvas",
+  "name": "@jdls/boids-canvas",
   "private": false,
   "version": "0.0.0",
   "type": "module",
