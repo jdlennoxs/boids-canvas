@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve("src", "main.tsx"),
+      entry: path.resolve("src", "index.tsx"),
       name: "boids-canvas",
       fileName: (format) => `boids-canvas.${format}.js`,
     },
