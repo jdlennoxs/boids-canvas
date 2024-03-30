@@ -19,7 +19,7 @@ export const defaultOptions: OptionsInterface = {
   count: 300,
 };
 
-function CanvasContainer(props: OptionsInterface) {
+export function CanvasContainer(props: OptionsInterface) {
   return (
     <Canvas style={{ height: "100%", background: props.backgroundColor }}>
       <Scene {...props} />
@@ -28,5 +28,3 @@ function CanvasContainer(props: OptionsInterface) {
 }
 
 CanvasContainer.defaultProps = defaultOptions;
-
-export default CanvasContainer;
