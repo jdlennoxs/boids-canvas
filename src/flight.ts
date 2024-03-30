@@ -1,14 +1,15 @@
 import { MutableRefObject } from "react";
 import { Object3D, Vector3 } from "three";
 import { is_point_inside_cone } from "./math-helpers";
+import { agentData } from "./agentData";
 
-export const circularMotion = ({
-  radius = 20,
-  ref,
-}: {
+export interface MotionInterface {
   radius?: number;
   ref: MutableRefObject<any>;
-}) => {
+  goal?: [x: number, y: number] | undefined;
+}
+
+export const circularMotion = ({ radius = 20, ref }: MotionInterface) => {
   const increment = ref.current.userData.alive;
   const getPositionForT = (increment: number) =>
     new Vector3(
@@ -29,9 +30,9 @@ export const circularMotion = ({
 
 export const flockingMotion =
   ({ distance }: { distance: number }) =>
-  ({ ref, goal: [x, y] }: { ref: MutableRefObject<any> }) => {
-    const { visibility, velocity, debug, speed, index, mass, alive } =
-      ref.current.userData;
+  ({ ref, goal: [x, y] = [0, distance] }: MotionInterface) => {
+    const { visibility, velocity, debug, speed, index } = ref.current
+      .userData as agentData;
     const { position } = ref.current;
     const flock = ref.current.parent.children;
     const neighbours = [];
@@ -41,7 +42,7 @@ export const flockingMotion =
     const alignment = new Vector3();
     const separation = new Vector3();
     // Find neighbours
-    flock.forEach((boid, i) => {
+    flock.forEach((boid: THREE.Mesh, i: number) => {
       if (i !== index) {
         const visible = is_point_inside_cone({
           point: boid.position,
@@ -102,7 +103,7 @@ export const flockingMotion =
         new Vector3(x * distance * 2, y * distance, -distance * 2)
           .sub(position)
           .multiplyScalar(speed)
-          .clampLength(0, 0.15)
+          .clampLength(0, 0.3)
       );
     }
 

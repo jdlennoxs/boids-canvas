@@ -3,15 +3,18 @@ import { Vector3 } from "three";
 import { defaultAgentData } from "./agentData";
 import { flockingMotion } from "./flight";
 import PaperBoid from "./paper-boid";
+import { OptionsInterface } from ".";
 
 export const Flock = ({
   count,
   distance,
   debug,
+  options,
 }: {
   count: number;
   distance: number;
   debug?: boolean;
+  options: any;
 }) => {
   const group = useRef<THREE.Group>(null!);
 
@@ -22,13 +25,18 @@ export const Flock = ({
         const visibility = 50 + 10 * mass;
         const velocity = new Vector3(
           Math.random(),
-          Math.random() / 2,
+          Math.random() / 3,
           -Math.random()
         );
         return (
           <PaperBoid
             key={index}
-            position={[Math.random() * 10, Math.random() * 5, distance]}
+            color={options.boidColor}
+            position={[
+              (Math.random() - 1) * distance,
+              (Math.random() - 1) * 50,
+              Math.max(distance - index, distance),
+            ]}
             motion={flockingMotion({ distance })}
             agentData={{
               ...defaultAgentData,

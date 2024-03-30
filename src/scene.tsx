@@ -1,9 +1,14 @@
 import { PerspectiveCamera } from "@react-three/drei";
-import { Suspense, useState } from "react";
+import { useFrame } from "@react-three/fiber";
+import { Suspense } from "react";
 import { Flock } from "./flock";
-import { useFrame, useThree } from "@react-three/fiber";
+import { OptionsInterface } from ".";
 
-function App({ debug }) {
+interface SceneInterface extends OptionsInterface {
+  debug?: boolean;
+}
+
+function Scene({ debug, ...props }: SceneInterface) {
   useFrame((state) => {
     if (state.clock.elapsedTime > 60) {
       state.setFrameloop("never");
@@ -18,12 +23,16 @@ function App({ debug }) {
         fov={70}
         makeDefault
       />
-      <ambientLight intensity={0.8} color={"#FFFCEC"} />
+      <ambientLight intensity={0.8} color={props.lightColor} />
       <pointLight position={[0, 40, 50]} intensity={0.5} />
-      <fog attach="fog" args={["#9DA7FF", 80, 150]} />
-      <Flock count={300} distance={100} />
+      <fog attach="fog" args={[props.fogColor, 80, 150]} />
+      <Flock
+        count={props.count}
+        distance={100}
+        options={{ boidColor: props.boidColor }}
+      />
     </Suspense>
   );
 }
 
-export default App;
+export default Scene;
