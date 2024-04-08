@@ -31,7 +31,7 @@ export const circularMotion = ({ radius = 20, ref }: MotionInterface) => {
 export const flockingMotion =
   ({ distance }: { distance: number }) =>
   ({ ref, goal: [x, y] = [0, distance] }: MotionInterface) => {
-    const { visibility, velocity, debug, speed, index } = ref.current
+    const { visibility, velocity, debug, speed, index, mass } = ref.current
       .userData as agentData;
     const { position } = ref.current;
     const flock = ref.current.parent.children;
@@ -79,6 +79,7 @@ export const flockingMotion =
           .divideScalar(neighbours.length)
           .normalize()
           .multiplyScalar(speed)
+          .divideScalar(1 / mass)
           .sub(velocity)
           .clampLength(0, 0.35)
       );
@@ -96,6 +97,7 @@ export const flockingMotion =
           .divideScalar(neighbours.length)
           .normalize()
           .multiplyScalar(speed)
+          .multiplyScalar(mass)
           .sub(velocity)
           .clampLength(0, 0.05)
       );
@@ -103,7 +105,8 @@ export const flockingMotion =
         new Vector3(x * distance * 2, y * distance, -distance * 2)
           .sub(position)
           .multiplyScalar(speed)
-          .clampLength(0, 0.3)
+          .divideScalar(mass)
+          .clampLength(0, 0.2)
       );
     }
 

@@ -25,7 +25,7 @@ function Scene({ debug, ...props }: SceneInterface) {
       />
       <ambientLight intensity={0.8} color={props.lightColor} />
       <pointLight position={[0, 40, 50]} intensity={0.5} />
-      <fog attach="fog" args={[props.fogColor, 80, 150]} />
+      <fog attach="fog" args={[props.fogColor, 80, 120]} />
       <Flock
         count={props.count}
         distance={100}

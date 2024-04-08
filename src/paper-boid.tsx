@@ -38,7 +38,7 @@ function PaperBoid({
       geometry={nodes.Plane002.geometry}
       rotation={[-Math.PI / 2, -Math.PI / 2, 0]}
       position={position}
-      scale={2}
+      scale={agentData.mass}
     >
       <meshPhysicalMaterial color={color} />
       {ref?.current?.userData.debug && (
