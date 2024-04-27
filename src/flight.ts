@@ -110,7 +110,7 @@ export const flockingMotion =
       );
     }
 
-    velocity.add(force).clampLength(speed / 2, speed);
+    velocity.add(force).clampLength(speed, speed);
 
     if (Math.abs(ref.current.position.z) > distance) {
       ref.current.position.z = -ref.current.position.z;
