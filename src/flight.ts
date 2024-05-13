@@ -91,7 +91,7 @@ export const flockingMotion =
           .normalize()
           .multiplyScalar(speed)
           .sub(velocity)
-          .clampLength(0, 0.35)
+          .clampLength(0, 0.18)
       );
       force.add(
         alignment
@@ -100,10 +100,10 @@ export const flockingMotion =
           .multiplyScalar(speed)
           .multiplyScalar(mass)
           .sub(velocity)
-          .clampLength(0, 0.09)
+          .clampLength(0, 0.07)
       );
       force.add(
-        new Vector3(x * distance * 2, y * (distance / 2), -distance * 2)
+        new Vector3(x * distance * 2, y * distance, -distance * 2)
           .sub(position)
           .normalize()
           .multiplyScalar(speed)
