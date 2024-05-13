@@ -14,7 +14,7 @@ export const Flock = ({
   count: number;
   distance: number;
   debug?: boolean;
-  options: any;
+  options: OptionsInterface;
 }) => {
   const group = useRef<THREE.Group>(null!);
 
@@ -22,7 +22,7 @@ export const Flock = ({
     <group ref={group} name="flock" dispose={null}>
       {[...Array(count)].map((value, index) => {
         const mass = 1 + Math.random();
-        const visibility = 50 + 10 * mass;
+        const visibility = 40 + 10 * mass;
         const velocity = new Vector3(
           Math.random(),
           Math.random() / 3,
@@ -31,7 +31,7 @@ export const Flock = ({
         return (
           <PaperBoid
             key={index}
-            color={options.boidColor}
+            color={index === 1 ? options.highlight : options.boidColor}
             position={[
               (Math.random() - 1) * distance,
               (Math.random() - 1) * 50,

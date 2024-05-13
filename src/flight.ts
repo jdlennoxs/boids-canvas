@@ -49,11 +49,12 @@ export const flockingMotion =
           origin: position,
           direction: velocity,
           height: visibility,
+          radius: 30 * visibility,
         });
         if (debug) {
-          flock[index].material.color.set(0x000000);
+          flock[index].material.color.set("pink");
           if (visible) {
-            flock[i].material.color.set(0xff0000);
+            flock[i].material.color.set("0xff0000");
           } else {
             flock[i].material.color.set("turquoise");
           }
@@ -90,7 +91,7 @@ export const flockingMotion =
           .normalize()
           .multiplyScalar(speed)
           .sub(velocity)
-          .clampLength(0, 0.12)
+          .clampLength(0, 0.35)
       );
       force.add(
         alignment
@@ -99,14 +100,15 @@ export const flockingMotion =
           .multiplyScalar(speed)
           .multiplyScalar(mass)
           .sub(velocity)
-          .clampLength(0, 0.05)
+          .clampLength(0, 0.09)
       );
       force.add(
-        new Vector3(x * distance * 2, y * distance, -distance * 2)
+        new Vector3(x * distance * 2, y * (distance / 2), -distance * 2)
           .sub(position)
+          .normalize()
           .multiplyScalar(speed)
           .divideScalar(mass)
-          .clampLength(0, 0.2)
+          .clampLength(0, 0.12)
       );
     }
 

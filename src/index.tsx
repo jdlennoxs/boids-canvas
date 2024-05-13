@@ -8,6 +8,7 @@ export interface OptionsInterface {
   lightColor: ColorValueHex;
   fogColor: ColorValueHex;
   boidColor: ColorValueHex;
+  highlight: ColorValueHex;
   count: number;
 }
 
@@ -16,6 +17,7 @@ export const defaultOptions: OptionsInterface = {
   lightColor: "#FFFCEC",
   fogColor: "#9DA7FF",
   boidColor: "turquoise",
+  highlight: "pink",
   count: 300,
 };
 
