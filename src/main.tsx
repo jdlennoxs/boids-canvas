@@ -3,6 +3,6 @@ import { CanvasContainer } from ".";
 
 createRoot(document.getElementById("root") as HTMLElement).render(
   <div style={{ height: "500px" }}>
-    <CanvasContainer count={300} />
+    <CanvasContainer count={250} />
   </div>
 );

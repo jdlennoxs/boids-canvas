@@ -1,16 +1,22 @@
-import { PerspectiveCamera } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Suspense } from "react";
 import { Flock } from "./flock";
 import { OptionsInterface } from ".";
 
-interface SceneInterface extends OptionsInterface {
+export interface SceneInterface extends OptionsInterface {
   debug?: boolean;
+  forces: {
+    separation: number;
+    cohesion: number;
+    alignment: number;
+    goal: number;
+  };
 }
 
 function Scene({ debug, ...props }: SceneInterface) {
   useFrame((state) => {
-    if (state.clock.elapsedTime > 60) {
+    if (state.clock.elapsedTime > props.duration!) {
       state.setFrameloop("never");
     }
   });
@@ -18,18 +24,21 @@ function Scene({ debug, ...props }: SceneInterface) {
     <Suspense fallback={null}>
       {debug && <axesHelper scale={[10, 10, 20]} />}
       <PerspectiveCamera
-        position={[0, 50, 50]}
+        position={[0, 25, 50]}
         rotation={[-Math.PI / 4, 0, 0]}
         fov={70}
         makeDefault
       />
-      <ambientLight intensity={0.8} color={props.lightColor} />
+      {props.useOrbitControls && <OrbitControls />}
+      <ambientLight intensity={0.8} color={props.lightColor!} />
       <pointLight position={[0, 40, 50]} intensity={0.5} />
-      <fog attach="fog" args={[props.fogColor, 80, 120]} />
+      <fog attach="fog" args={[props.fogColor!, 90, 120]} />
       <Flock
-        count={props.count}
+        debug={debug}
+        count={props.count!}
         distance={100}
-        options={{ boidColor: props.boidColor }}
+        options={{ boidColor: props.boidColor!, highlight: props.highlight! }}
+        forces={props.forces}
       />
     </Suspense>
   );

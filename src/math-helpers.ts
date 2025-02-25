@@ -31,18 +31,32 @@ export const is_point_inside_cone = ({
   height?: number;
   radius?: number;
 }) => {
-  const coneOrigin = new Vector3().subVectors(
-    origin,
-    direction.normalize().multiplyScalar(16)
-  );
-  const absolute_distance = new Vector3().subVectors(point, coneOrigin);
-  const axial_dist = cone_dist(absolute_distance, direction.normalize());
-  if (axial_dist < 14 || axial_dist > height) return false;
+  const absolute_distance = new Vector3().subVectors(point, origin);
+  const axial_dist = cone_dist(absolute_distance, direction);
+  if (axial_dist < 0 || axial_dist > height) return false;
+
   const radius_at_dist = cone_radius(axial_dist, height, radius);
   const radial_dist = orthogonal_distance(
     absolute_distance,
     axial_dist,
-    direction.normalize()
+    direction
   );
   return radial_dist < radius_at_dist;
+};
+
+export const is_point_inside_sphere = ({
+  point,
+  origin,
+  radius = 40,
+}: {
+  point: Vector3;
+  origin: Vector3;
+  radius?: number;
+}) => {
+  return (
+    Math.pow(point.x - origin.x, 2) +
+      Math.pow(point.y - origin.y, 2) +
+      Math.pow(point.z - origin.z, 2) <
+    Math.pow(radius, 2)
+  );
 };

@@ -1,15 +1,16 @@
 import { MutableRefObject } from "react";
 import { Object3D, Vector3 } from "three";
-import { is_point_inside_cone } from "./math-helpers";
+import { is_point_inside_cone, is_point_inside_sphere } from "./math-helpers";
 import { agentData } from "./agentData";
 
 export interface MotionInterface {
   radius?: number;
   ref: MutableRefObject<any>;
   goal?: [x: number, y: number] | undefined;
+  delta: number;
 }
 
-export const circularMotion = ({ radius = 20, ref }: MotionInterface) => {
+export const circularMotion = ({ radius = 40, ref }: MotionInterface) => {
   const increment = ref.current.userData.alive;
   const getPositionForT = (increment: number) =>
     new Vector3(
@@ -29,114 +30,139 @@ export const circularMotion = ({ radius = 20, ref }: MotionInterface) => {
 };
 
 export const flockingMotion =
-  ({ distance }: { distance: number }) =>
-  ({ ref, goal: [x, y] = [0, distance] }: MotionInterface) => {
-    const { visibility, velocity, debug, speed, index, mass } = ref.current
-      .userData as agentData;
-    const { position } = ref.current;
-    const flock = ref.current.parent.children;
-    const neighbours = [];
+  ({
+    distance,
+    forces,
+    speedMultiplier = 40.0,
+    avoid = false,
+  }: {
+    distance: number;
+    avoid: boolean;
+    forces: {
+      separation: number;
+      cohesion: number;
+      alignment: number;
+      goal: number;
+    };
+    speedMultiplier?: number;
+  }) =>
+    ({ ref, goal: [x, y] = [0, distance], delta }: MotionInterface) => {
+      const { visibility, debug, velocity, speed, index, mass } = ref.current
+        .userData as agentData;
+      const { position } = ref.current;
+      const flock = ref.current.parent.children;
+      const neighbours = [];
 
-    const force = new Vector3();
-    const cohesion = new Vector3();
-    const alignment = new Vector3();
-    const separation = new Vector3();
-    // Find neighbours
-    flock.forEach((boid: THREE.Mesh, i: number) => {
-      if (i !== index) {
-        const visible = is_point_inside_cone({
+      const force = new Vector3();
+      const cohesion = new Vector3();
+      const alignment = new Vector3();
+      const separation = new Vector3();
+      const avoidance = new Vector3();
+      // Helper function to determine visibility
+      const isVisible = (boid: THREE.Mesh, i: number) => {
+        if (i === index) return false;
+        const proximity = is_point_inside_sphere({
           point: boid.position,
           origin: position,
-          direction: velocity,
-          height: visibility,
-          radius: 30 * visibility,
+          radius: visibility,
         });
-        if (debug) {
-          flock[index].material.color.set("pink");
-          if (visible) {
-            flock[i].material.color.set("0xff0000");
-          } else {
-            flock[i].material.color.set("turquoise");
-          }
-        }
-        if (visible) {
+        if (!proximity) return false;
+        return !is_point_inside_cone({
+          point: boid.position,
+          origin: position,
+          direction: new Vector3().copy(velocity).negate().normalize(),
+          height: visibility,
+          radius: visibility * 2,
+        });
+      };
+
+      // Find neighbours
+      flock.forEach((boid: THREE.Mesh, i: number) => {
+        if (isVisible(boid, i)) {
           neighbours.push(i);
           cohesion.add(flock[i].position);
           alignment.add(flock[i].userData.velocity);
-
           const distance = position.distanceTo(flock[i].position);
-
-          if (distance <= 20) {
-            const offset = new Vector3().add(position).sub(flock[i].position);
-            separation.add(offset.normalize().divideScalar(distance));
+          const strength = 1 - distance / visibility;
+          const offset = new Vector3().add(position).sub(flock[i].position);
+          separation.add(offset.multiplyScalar(strength));
+          if (avoid && i === 1) {
+            const obstacle = flock[i].position;
+            const avoid = position.distanceTo(obstacle);
+            const strength = 1 - avoid / visibility;
+            const offset = new Vector3().add(position).sub(obstacle);
+            avoidance.add(offset.multiplyScalar(strength));
+            force.add(avoidance.normalize().multiplyScalar(forces.separation / 2));
+          }
+          if (debug) {
+            flock[index].material.color.set("pink");
+            flock[i].material.color.set(isVisible(boid, i) ? "coral" : "turquoise");
           }
         }
-      }
-    });
+      });
 
-    if (neighbours.length) {
-      force.add(
-        separation
-          .divideScalar(neighbours.length)
-          .normalize()
-          .multiplyScalar(speed)
-          .divideScalar(1 / mass)
-          .sub(velocity)
-          .clampLength(0, 0.35)
-      );
-      force.add(
-        cohesion
-          .divideScalar(neighbours.length)
+      if (neighbours.length) {
+        force.add(separation.normalize().multiplyScalar(forces.separation));
+        force.add(cohesion.divideScalar(neighbours.length).sub(position).normalize().multiplyScalar(forces.cohesion));
+        force.add(alignment.divideScalar(neighbours.length).normalize().sub(velocity).multiplyScalar(forces.alignment));
+
+        force.add(new Vector3(x * distance * 2, y * distance + 25, -distance * 2)
           .sub(position)
           .normalize()
-          .multiplyScalar(speed)
-          .sub(velocity)
-          .clampLength(0, 0.18)
-      );
-      force.add(
-        alignment
-          .divideScalar(neighbours.length)
-          .normalize()
-          .multiplyScalar(speed)
-          .multiplyScalar(mass)
-          .sub(velocity)
-          .clampLength(0, 0.07)
-      );
-      force.add(
-        new Vector3(x * distance * 2, y * distance, -distance * 2)
-          .sub(position)
-          .normalize()
-          .multiplyScalar(speed)
           .divideScalar(mass)
-          .clampLength(0, 0.12)
-      );
-    }
+          .multiplyScalar(forces.goal));
+      }
 
-    velocity.add(force).clampLength(speed, speed);
 
-    if (Math.abs(ref.current.position.z) > distance) {
-      ref.current.position.z = -ref.current.position.z;
-    }
-    if (Math.abs(ref.current.position.y) > distance / 2) {
-      velocity.y = -velocity.y;
-    }
-    if (Math.abs(ref.current.position.x) > distance * 2) {
-      ref.current.position.x = -ref.current.position.x;
-    }
+      // Scale forces by delta and speedMultiplier to ensure frame-rate independence
+      force.multiplyScalar(delta * speedMultiplier);
 
-    ref.current.position.x += velocity.x;
-    ref.current.position.y += velocity.y;
-    ref.current.position.z += velocity.z;
-    const mock = new Object3D();
+      // Ensure minimum forward velocity
+      const forwardVelocity = velocity.clone().normalize().multiplyScalar(speed * (neighbours.length ? 0.1 : 0.2) * delta * speedMultiplier);
+      force.add(forwardVelocity);
 
-    ref.current.parent.add(mock);
-    mock.position.copy(ref.current.position);
+      const desiredVelocity = velocity.clone()
+        .add(force)
+        .normalize()
+        .multiplyScalar(speed);
 
-    const target = new Vector3().addVectors(ref.current.position, velocity);
+      // Smooth velocity changes with higher interpolation factor
+      velocity.lerp(desiredVelocity, mass / 5 * delta * speedMultiplier)
+        .clampLength(speed * 0.4, speed).divideScalar(0.9);
 
-    mock.lookAt(target);
-    const targetQuaternion = mock.quaternion.clone();
+      // Add a small random factor to the velocity for floatiness
+      velocity.x += (Math.random() - 0.5) * 0.01;
+      velocity.y += (Math.random() - 0.5) * 0.03;
+      velocity.z += (Math.random() - 0.5) * 0.01;
 
-    ref.current.parent.remove(mock);
-    ref.current.quaternion.slerp(targetQuaternion, 0.1);
-  };
+      // Boundary conditions
+      if (Math.abs(ref.current.position.z) > distance) {
+        ref.current.position.z = -ref.current.position.z;
+      }
+      if (Math.abs(ref.current.position.y) > distance / 2) {
+        velocity.y = ref.current.position.y > 0 ? -Math.abs(velocity.y) : Math.abs(velocity.y);
+      }
+      if (Math.abs(ref.current.position.x) > distance * 2) {
+        ref.current.position.x = -ref.current.position.x;
+      }
+
+      ref.current.position.x += velocity.x * delta * speedMultiplier;
+      ref.current.position.y += velocity.y * delta * speedMultiplier;
+      ref.current.position.z += velocity.z * delta * speedMultiplier;
+
+      const mock = new Object3D();
+      ref.current.parent.add(mock);
+      mock.position.copy(ref.current.position);
+
+      // Ensure the target is always in front of the bird
+      const target = new Vector3().addVectors(ref.current.position, velocity.clone().normalize().multiplyScalar(10));
+      mock.lookAt(target);
+      const targetQuaternion = mock.quaternion.clone();
+      ref.current.parent.remove(mock);
+
+      // Increase the interpolation factor for smoother rotation
+      ref.current.quaternion.slerp(targetQuaternion, 0.1);
+
+      // Add damping to the velocity changes
+      velocity.lerp(velocity, 0.98).clampLength(speed * 0.4, speed);
+    };

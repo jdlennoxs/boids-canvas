@@ -1,0 +1,59 @@
+/* CanvasContainer.css */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: white;
+    height: 4px;
+    border-radius: 2px;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -6px;
+    background-color: white;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  
+  input[type="range"]::-moz-range-track {
+    background: white;
+    height: 4px;
+    border-radius: 2px;
+  }
+  
+  input[type="range"]::-moz-range-thumb {
+    border: none;
+    background-color: white;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  
+  .slider-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: calc(100% - 16px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 8px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+    gap: 8px;
+  }
+  
+  .slider {
+    flex: 1 1 auto;
+    text-align: center;
+    color: white;
+  }

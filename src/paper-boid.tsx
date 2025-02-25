@@ -11,7 +11,7 @@ import { ColorValueHex } from ".";
 
 interface Boid {
   position: THREE.Vector3Tuple;
-  motion: ({ radius, ref, goal }: MotionInterface) => void;
+  motion?: ({ radius, ref, goal }: MotionInterface) => void;
   agentData: agentData;
   color: ColorValueHex;
 }
@@ -25,9 +25,11 @@ function PaperBoid({
   const { nodes } = useGLTF("/round-plane.glb");
   const ref = useRef<THREE.Mesh>(null!);
   const cone = useRef<THREE.Mesh>(null!);
+  const sphere = useRef<THREE.Mesh>(null!);
 
-  useFrame((state) => {
-    motion({ ref, goal: [state.pointer.x, state.pointer.y] });
+  useFrame((state, delta) => {
+    motion({ ref, goal: [state.pointer.x, state.pointer.y], delta });
+    agentData.alive += delta;
   });
 
   return (
@@ -41,17 +43,31 @@ function PaperBoid({
       scale={agentData.mass}
     >
       <meshPhysicalMaterial color={color} />
-      {ref?.current?.userData.debug && (
-        <mesh ref={cone} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 20]}>
-          <coneBufferGeometry
-            args={[40, agentData.visibility, 12]}
-            transparent
+      {/* {ref?.current?.userData.debug && (
+        <mesh
+          ref={cone}
+          position={[0, 0, -agentData.visibility / 2]}
+          rotation={[Math.PI / 2, 0, 0]}
+        >
+          <coneGeometry
+            args={[agentData.visibility, agentData.visibility, 8]}
           />
+          <meshBasicMaterial
+            // color={"red"}
+            opacity={0.1}
+            // transparent
+            wireframe
+          />
+        </mesh>
+      )} */}
+      {ref?.current?.userData.debug && (
+        <mesh ref={sphere} position={[0, 0, 0]}>
+          <sphereGeometry args={[agentData.visibility, 32, 16]} />
           <meshBasicMaterial
             color={"red"}
             opacity={0.1}
             transparent
-            wireframe
+            // wireframe
           />
         </mesh>
       )}
