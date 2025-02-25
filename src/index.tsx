@@ -48,7 +48,6 @@ export function CanvasContainer(props: OptionsInterface) {
         <Scene
           {...props}
           forces={forces}
-          avoidance
         />
       </Canvas>
       {props.showSliders && (

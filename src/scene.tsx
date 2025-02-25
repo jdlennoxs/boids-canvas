@@ -37,7 +37,7 @@ function Scene({ debug, ...props }: SceneInterface) {
         debug={debug}
         count={props.count!}
         distance={100}
-        options={{ boidColor: props.boidColor!, highlight: props.highlight! }}
+        options={{ boidColor: props.boidColor!, highlight: props.highlight!, avoid: props.avoid! }}
         forces={props.forces}
       />
     </Suspense>
